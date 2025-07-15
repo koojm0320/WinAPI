@@ -52,3 +52,78 @@ WinAPI 창 만들기
 4-5. 기본 메세지 루프
 
 5. LRESULT CALLBACK WndProc 정의
+
+=========================================================================
+
+CALLBACK Funtion
+- 역방향 함수 호출
+- 응용 프로그램이 제공하는 함수 중에 운영체제가 필요한 함수가 있으면 호출하는 것
+- 콜백 함수는 응용 프로그램 내부에 있지만, 응용 프로그램은 함수를 직접 호출하지 않고
+    오직 운영체제만이 이 함수를 출력할 수 있음.
+- CALLBACK은 __stdcall 호출 규약을 따름.
+    ㄴ 매개변수 전달: 매개변수가 오른쪽에서 왼쪽 순서로 스택에 쌓임.
+- CALLBACK 함수를 사용하려면, 해당 함수의 주소를 특정 WinAPI 함수에 인자로 전달하여 시스템에
+    등록해야 함.
+
+DC(Device Context)
+ㄴ GDI(Graphics Device Interface)함수를 사용하여 화면이나 프린터에 출력하기 위해 필요한 모든 속성과 정보를 담고 있는 데이터 구조체이자 핸들
+ㄴ Pen, Brush, Font, 색상, 출력 영역 을 담고 있음
+
+GetDC
+ㄴ 특정 윈도우에 그림을 그릴 수 있는 DC 핸들을 얻어로는 함수
+ㄴ 주로 클라이언트 영역에 대한 DC를 반환함.
+ㄴ HDC GetDC(HWND hWnd);
+
+ReleaseDC
+ㄴ GetDC를 통해 얻어온 DC를 시스템에 반납하는 함수
+ㄴ int ReleaseDC(HWND hWnd, HDC hDC);
+ㄴ GetDC를 호출할 때 사용했던 윈도우 핸들과 얻었던 DC 핸들을 인자로 전달하여 자원을 해제함.
+
+두 개의 DC는 반드시 같이 사용해야 함.
+해제하지 않으면 리소스 누수가 발생하여 시스템이 불안정해지거나 멈출 수 있음.
+
+WM_PAINT
+ㄴ 윈도우 클라이언트 영역이 다시 그려져야 할 때 (창이 가려졌다가 다시 보여야 할 경우 같은 것) 시스템이 자동으로 보내는 메세지
+ㄴ 처리 위치: WndProc 함수 내에서 case WM_PAINT: 문으로 처리함.
+ㄴ 이 메세지를 받으면 윈도우는 내부적으로 화면을 다시 그릴 준비를 하게 되며,
+    여기서 BeginPaint 와 EndPaint를 같이 사용함.
+
+PAINTSTRUCT
+ㄴ BeginPaint 와 EndPaint 사이에서 사용되는 구조체
+ㄴ 클라이언트 영역에 그려야 할 정보
+ㄴ 그리기 중 다시 배경을 칠해야 하는 지 여부
+ㄴ 내부적으로는 그리그 플래그 등의 정보도 포함
+
+BeginPaint
+ㄴ 목적: 클라이언트 영역에 그리기를 시작하기 위한 준비
+ㄴ 반환: 그리기를 위한 디바이스 건텍스트 핸들(HDC)를 반환
+ㄴ 매개변수:
+    HWND hWnd: 윈도우 핸들
+    PAINTSTRUCT* lpPaint: 구조체 주소 (BeginPaint 가 데이터를 채워줌)
+ㄴ WM_PAINT 내에서만 사용해야 함.
+
+EndPaint
+ㄴ 목적: BeginPaint 이후의 그리기 작업을 마무리함.
+ㄴ 기능: 그리기 작업이 끝났음을 시스템에 알려주고 더 이상 그릴 필요 없다는 정보를 전달함.
+ㄴ EndPaint(hWnd, &ps);
+
+기본적인 구조
+case WM_PAINT:
+{
+    PAINTSTRUCT ps;
+    HDC hdc = BeginPaint(hWnd, &ps);   // 화면 그릴 준비
+    // 그리기 작업 (예: TextOut, Rectangle, LineTo 등)
+    EndPaint(hWnd, &ps);               // 그리기 종료
+}
+break;
+
+GetDC / ReleaseDC 는 BeginPaint / EndPaint와 달리
+WndProc 함수 밖에서 사용할 수 있음.
+
+GetDC / ReleaseDC는 자동 무효화 처리가 안되기 때문에 직접 처리해주어야 함
+GetDC / ReleaseDC는 프로그래머가 즉시 그리고 싶을 때 사용
+
+BeginPaint / EndPaint는 시스템이 재그리기를 요청한 경우 사용
+
+* 자동 무효화 처리
+ㄴ 윈도우 시스템이 클라이언트 영역 중 다시 그려야 할 부분을 자동으로 추적 및 관리해주는 기능
