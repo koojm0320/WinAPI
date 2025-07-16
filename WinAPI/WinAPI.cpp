@@ -176,13 +176,25 @@ int APIENTRY WinMain(   HINSTANCE hInstance,
     //      ㄴ 단, 메세지 큐가 비어있을 경우 메세지가 들어올 때까지 대기
     // PeekMassage: 메세지가 없더라도 반환하는 함수
 
+    // GetMessage와 PeekMessage
+    
+    /*
+    while (true)
+    {
+        if (PeekMessage(&message, NULL, 0, 0, PM_REMOVE))
+        {
+            if (message.message == WM_QUIT) break;
+            TranslateMessage(&message);
+            DispatchMessage(&message);
+        }
+    }
+    */
     while (GetMessage(&message, 0, 0, 0))
     {
         // TranslateMessage: 키보드 입력 메세지 처리 담당
         // ㄴ 입력된 키가 문자키인지 확인을 하고 대문자 / 소문자 / 한글 / 영문인지에 대한 메세지를 발생 시킨다.
         // ㄴ WM_CHAR: 
         TranslateMessage(&message);
-
         // DispatchMessage: 프로시저에서 전달된 메세지를 실제 윈도우로 전달
         DispatchMessage(&message);
     }
@@ -199,9 +211,97 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
     - Proc 내에서 메세지를 전부 처리하는 게 아닌 특정 메세지만 처리하고 나머지는 DefWindowProc에서 처리하는 것이 일반적
     */
+
+    // HDC: Handle Device Context
+    HDC hdc;
+    PAINTSTRUCT ps;
+
+    char str[] = "오케이";
+    // char str2* = "오케이";
+    // str[2] = 'c';
+    // str2[2] = 'c';
+    // ㄴ char[]: 
+    // ㄴ char* : 원칙적으로 수정이 불가능
+
+    // 사각형의 좌표를 저장하기 위한 구조체       ★ 매우 중요 ! ★
+    // 점을 찍는 역할
+    RECT rc = { 100, 100, 200, 200 };
+    
     switch (iMessage)
     {
     case WM_CREATE:
+        break;
+
+        // 출력
+    case WM_PAINT:
+        hdc = BeginPaint(hWnd, &ps);
+
+        // TextOut(): hdc, x, y, string, stringlen (문자열 길이 반환)
+        TextOut(hdc, 300, 300, "과제가 너무 재미있다", strlen("과제가 너무 재밌다"));
+
+        SetTextColor(hdc, RGB(255, 0, 0));
+        TextOut(hdc, 300, 400, "더 많은 과제가 필요", strlen("더 많은 과제가 필요"));
+
+        // SetPixel(hdc, 300, 200, RGB(255, 0, 0));
+        for (int i = 0; i < 10000; i++)
+        {
+            SetPixel(hdc, rand() % 800, rand() % 800, RGB(rand() % 255, rand() % 255, rand() % 255));
+        }
+
+        for (int i = 0; i < 100; i++)
+        {
+            for (int j = 0; j < 100; j++)
+            {
+                SetPixel(hdc, 400 + i, 400 + j, RGB(255, i * 2, i * 2));
+            }
+        }
+
+        // MoveToEx(): SX, SY   시작점 지정
+        MoveToEx(hdc, 400, 400, NULL);
+        // EX, EY
+        LineTo(hdc, 200, 400);
+
+        MoveToEx(hdc, 400, 400, NULL);
+        LineTo(hdc, 200, 200);
+        
+        Ellipse(hdc, 300, 100, 200, 200);
+
+        // 선을 이어주는 역할
+        // Rectangle(hdc, 100, 100, 200, 200);
+        Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+
+        EndPaint(hWnd, &ps);
+        break;
+
+    case WM_LBUTTONDOWN:
+        break;
+
+    case WM_RBUTTONDOWN:
+
+        hdc = GetDC(hWnd);
+
+        SetTextColor(hdc, RGB(0, 0, 255));
+        TextOut(hdc, 350, 500, str, strlen(str));
+
+        ReleaseDC(hWnd, hdc);
+
+        break;
+
+
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case VK_LEFT:
+            break;
+
+        case VK_RIGHT:
+            break;
+
+        case VK_ESCAPE:
+            PostMessage(hWnd, WM_DESTROY, 0, 0);
+
+            break;
+        }
         break;
 
     case WM_DESTROY:

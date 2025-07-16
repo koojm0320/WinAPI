@@ -13,6 +13,9 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="0716">
+      <UniqueIdentifier>{9bbbaecb-67a0-4136-aa0d-3e0ae3916bc0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="framework.h">
@@ -40,6 +43,12 @@
     </ClCompile>
     <ClCompile Include="Practice2.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="HomeWork0716_01.cpp">
+      <Filter>0716</Filter>
+    </ClCompile>
+    <ClCompile Include="HomeWork0716_02.cpp">
+      <Filter>0716</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -17,7 +17,6 @@ int WINAPI WinMain(
 	_hInstance = hInstance;
 
 	WNDCLASS wndClass{};
-
 	wndClass.lpfnWndProc = WndProc;
 	wndClass.hInstance = hInstance;
 	wndClass.lpszClassName = _lpszClass;
@@ -28,23 +27,27 @@ int WINAPI WinMain(
 
 	ShowWindow(_hWnd, nCmdShow);
 
-	MSG message;
+	MSG message{};
 
-	while (GetMessage(&message, 0, 0, 0))
+
+
+	while (GetMessage(&message,0,0,0))
 	{
 		TranslateMessage(&message);
 		DispatchMessage(&message);
 	}
 }
 
-LRESULT CALLBACK WndProc(HWND hwnd, UINT uint, WPARAM wparam, LPARAM lparam)
+LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-	switch (uint)
+	switch (iMessage)
 	{
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
 	}
-
-	return DefWindowProc(hwnd, uint, wparam, lparam);
+	return DefWindowProc(hWnd, iMessage, wParam, lParam);
 }
+
+
+

@@ -45,7 +45,7 @@ WinAPI 창 만들기
 
 4. int APIENTRY WinMain
 4-1. 인스턴스 핸들 저장     _hInstance = hInstance;
-4-1. 윈도우 창 구조체 선언    
+4-1. 윈도우 창 구조체 선언   
 4-2. 윈도우 클래스 등록 
 4-3. 윈도우 생성
 4-4. 윈도우 출력
@@ -127,3 +127,56 @@ BeginPaint / EndPaint는 시스템이 재그리기를 요청한 경우 사용
 
 * 자동 무효화 처리
 ㄴ 윈도우 시스템이 클라이언트 영역 중 다시 그려야 할 부분을 자동으로 추적 및 관리해주는 기능
+
+======================================================================================
+
+GDI
+ㄴ BMP 포맷 사용
+    ㄴ jpg, png 이전에 있던 이미지 포맷
+
+GDI+
+ㄴ bmp, png, jpg를 모두 사용할 수 있음
+ㄴ API와 Direct는 주체가 다름 (GPU가 사용 가능 하는가 아닌가)
+
+4대 문자열 함수
+
+strlen(): 문자열 길이
+strcpy(x, y): y를 x에 대입
+strcmp(x, y): 비교
+strcat(x, y): x + y
+
+strlen -> wcslen -> _tcslen
+strcpy -> wcscpy -> _tcscpy
+.
+.
+.
+strtok : 문자열 자를 때 사용
+
+문자 하나를 찾음 
+strchr
+문자열을 찾음
+strstr
+
+cs : Character Set
+
+WinProc가 WinAPI에 코어 함수임
+
+
+- 윈도우를 다시 그려야 할 때 발생하는 메세지
+ㄴ 1. 처음 만들어질 때
+ㄴ 2. 크기를 조절할 때
+ㄴ 3. 다른 윈도우에 가려졌다가 다시 호출되는 상황
+ㄴ 4. 함수가 호출될 때 ★: UpdateAllViews, InvailDateRect
+
+사각형, 원, 삼각형
+
+GameColision에는 크게 두 가지로 나뉨
+AABB / OBB
+AABB: 사각형, 연산이 적지만 충돌 시 정밀도가 떨어짐
+
+OBB: 정밀도 높음, 하지만 연산량이 많음
+
+픽셀 충돌 기법
+
+MashColider 기법
+ㄴ 연산량이 많아 
