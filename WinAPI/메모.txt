@@ -180,3 +180,30 @@ OBB: 정밀도 높음, 하지만 연산량이 많음
 
 MashColider 기법
 ㄴ 연산량이 많아 
+
+=========================================================================
+InvalidateRect
+ㄴ 윈도우의 일부 또는 전체 영역을 무효화해서 다시 그리도록 오청
+ㄴ WM_PAINT 메시지를 유발
+
+SetTimer
+ㄴ 지정한 시간 간격마다 WM_TIMER 메세지를 윈도우로 보냄
+ㄴ 메세지를 받아서 특정 동작을 주기적으로 실행할 수 있음.
+
+UINT_PTR SetTimer(HWND hWnd, UINT_PTR nIDEvent, UINT uElapse, TIMERPROC lpTimerFunc);
+매개변수
+- hWnd: 타이머 메시지를 받을 윈도우 핸들
+- nIDEvent: 타이머 ID (중복되지 않게 지정)
+- uElapse: 타이머 간격 (단위: 밀리초)
+- lpTimerFunc: 타이머 콜백 함수 (대부분 NULL로 놓고 메시지 처리)
+
+SetTimer(hWnd, 1, 1000, NULL);  
+
+KillTimer
+ㄴ SetTimer로 설정한 타이머를 종료
+
+BOOL KillTimer(HWND hWnd, UINT_PTR uIDEvent);
+
+매개변수
+- hWnd: 타이머를 종료할 윈도우 핸들
+- uIDEvent: 종료할 타이머 ID (SetTimer에서 사용한 것과 같아야 함)

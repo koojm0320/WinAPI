@@ -50,6 +50,9 @@
     <ClCompile Include="HomeWork0716_02.cpp">
       <Filter>0716</Filter>
     </ClCompile>
+    <ClCompile Include="HomeWork0716_03.cpp">
+      <Filter>0716</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="WinAPI.rc">

@@ -231,7 +231,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 		
-		for (int  i = 0; i <= drawCount; i++)
+		for (int  i = 0; i < drawCount; i++)
 		{
 			DrawText(hdc, i);
 		}

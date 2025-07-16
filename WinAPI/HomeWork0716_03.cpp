@@ -55,55 +55,53 @@ int APIENTRY WinMain(
 	return message.wParam;
 }
 
-int drawCount = 0;
+RECT r = { 100, 100, 200, 200 };
+int moveCounter = 10;
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
-
 	HDC hdc;
 	PAINTSTRUCT ps;
-	TCHAR mul[81];
 
 	switch (iMessage)
 	{
 	case WM_CREATE:
-		drawCount = 1;
 		break;
 
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
-
-		for (int i = 2; i <= drawCount; i++)
-		{
-			for (int j = 1; j <= 9; j++)  // 고정 1~9단
-			{
-				wsprintf(mul, TEXT("%d X %d = %d"), i, j, i * j);
-				TextOut(hdc,
-					250 + ((i - 2) % 3) * 90,
-					50 + ((i - 2) / 3) * (9 * 22 + 15) + (j - 1) * 22,
-					mul,
-					lstrlen(mul));
-			}
-		}
-
+		Rectangle(hdc, r.left, r.top, r.right, r.bottom);
 		EndPaint(hWnd, &ps);
 		break;
 
 	case WM_LBUTTONDOWN:
-		drawCount++;
-		if (drawCount > 9) drawCount = 9;
-		InvalidateRect(hWnd, NULL, TRUE);
 		break;
 
-	case WM_RBUTTONDOWN:
-		drawCount--;
-		if (drawCount < 1) drawCount = 1;
-		InvalidateRect(hWnd, NULL, TRUE);
-		break;
 
 	case WM_KEYDOWN:
-		if (wParam == VK_ESCAPE)
+		switch (wParam)
+		{
+		case VK_LEFT:
+			r.left -= moveCounter;
+			r.right -= moveCounter;
+			break;
+		case VK_RIGHT:
+			r.left += moveCounter;
+			r.right += moveCounter;
+			break;
+		case VK_UP:
+			r.top -= moveCounter;
+			r.bottom -= moveCounter;
+			break;
+		case VK_DOWN:
+			r.top += moveCounter;
+			r.bottom += moveCounter;
+			break;
+		case VK_ESCAPE:
 			PostMessage(hWnd, WM_DESTROY, 0, 0);
+			break;
+		}
+		InvalidateRect(hWnd, NULL, TRUE);  // 다시 그리기 요청
 		break;
 
 	case WM_DESTROY:
