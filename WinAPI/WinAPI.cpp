@@ -274,6 +274,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
         break;
 
     case WM_LBUTTONDOWN:
+
+        // InvalidateRect();
+
         break;
 
     case WM_RBUTTONDOWN:
