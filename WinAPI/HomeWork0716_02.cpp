@@ -55,11 +55,14 @@ int APIENTRY WinMain(
 	return message.wParam;
 }
 
+int drawCount = 0;
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
 	HDC hdc;
 	PAINTSTRUCT ps;
 	TCHAR mul[81];
+
 
 	switch (iMessage)
 	{
@@ -69,9 +72,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 
-		for (int i = 2; i <= 9; i++)
+		for (int i = 2; i <= drawCount; i++)
 		{
-			for (int j = 1; j <= 9; j++)
+			for (int j = 1; j <= drawCount; j++)
 			{					
 				wsprintf(mul, "%d X %d = %d", i, j, i * j);
 				TextOut(hdc, 
@@ -87,6 +90,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		EndPaint(hWnd, &ps);
 
 	case WM_LBUTTONDOWN:
+		drawCount++;
+		InvalidateRect(hWnd, NULL, FALSE);
 		break;
 
 		
