@@ -182,9 +182,10 @@ MashColider 기법
 ㄴ 연산량이 많아 
 
 =========================================================================
-InvalidateRect
+InvalidateRect(hWnd, NULL, TRUE);
 ㄴ 윈도우의 일부 또는 전체 영역을 무효화해서 다시 그리도록 오청
 ㄴ WM_PAINT 메시지를 유발
+ㄴ 두 번쨰 내용 - 갱신할 영역 핸들 값 입력
 
 SetTimer
 ㄴ 지정한 시간 간격마다 WM_TIMER 메세지를 윈도우로 보냄
@@ -207,3 +208,7 @@ BOOL KillTimer(HWND hWnd, UINT_PTR uIDEvent);
 매개변수
 - hWnd: 타이머를 종료할 윈도우 핸들
 - uIDEvent: 종료할 타이머 ID (SetTimer에서 사용한 것과 같아야 함)
+
+멀티바이트 <-> 와이드바이트
+
+과제를 할 때 확장성 고려해서 해보기

@@ -2,8 +2,7 @@
 //
 
 // #include "framework.h"
-#include <Windows.h>
-#include <tchar.h>
+#include "Stdafx.h"
 
 #pragma region WinAPI
 /*
@@ -78,6 +77,8 @@ EX)
 
 
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
+
+RECT rc;
 
 //#define GET_WINDOWS_HANDLE()        (GET_WINDOWS_MANAGER->getWindowsHandle())
 //
@@ -225,11 +226,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
     // 사각형의 좌표를 저장하기 위한 구조체       ★ 매우 중요 ! ★
     // 점을 찍는 역할
-    RECT rc = { 100, 100, 200, 200 };
     
     switch (iMessage)
     {
     case WM_CREATE:
+        rc = RectMakeCenter(400, 400, 100, 100);
+
+        DrawRectMake(hdc, rc);
+
         break;
 
         // 출력
@@ -268,7 +272,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
         // 선을 이어주는 역할
         // Rectangle(hdc, 100, 100, 200, 200);
-        Rectangle(hdc, rc.left, rc.top, rc.right, rc.bottom);
+        DrawRectMake(hdc, rc);
 
         EndPaint(hWnd, &ps);
         break;

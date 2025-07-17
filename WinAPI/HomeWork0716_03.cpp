@@ -36,7 +36,7 @@ int APIENTRY WinMain(
 		_lpszClass,
 		WS_OVERLAPPEDWINDOW,
 		100, 100,
-		810, 800,
+		800, 800,
 		NULL,
 		(HMENU)NULL,
 		hInstance,
@@ -84,24 +84,44 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case VK_LEFT:
 			r.left -= moveCounter;
 			r.right -= moveCounter;
+			if (r.left < 0)
+			{
+				r.left = 0;
+				r.right = r.left + 100;
+			}
 			break;
 		case VK_RIGHT:
 			r.left += moveCounter;
 			r.right += moveCounter;
+			if (r.right > 800)
+			{
+				r.right = 800;
+				r.left = r.right - 100;
+			}
 			break;
 		case VK_UP:
 			r.top -= moveCounter;
 			r.bottom -= moveCounter;
+			if (r.top < 0)
+			{
+				r.top = 0;
+				r.bottom = r.top + 100;
+			}
 			break;
 		case VK_DOWN:
 			r.top += moveCounter;
 			r.bottom += moveCounter;
+			if (r.bottom > 800)
+			{
+				r.bottom = 800;
+				r.top = r.bottom - 100;
+			}
 			break;
 		case VK_ESCAPE:
 			PostMessage(hWnd, WM_DESTROY, 0, 0);
 			break;
 		}
-		InvalidateRect(hWnd, NULL, TRUE);  // 다시 그리기 요청
+		InvalidateRect(hWnd, NULL, TRUE);
 		break;
 
 	case WM_DESTROY:
