@@ -48,13 +48,3 @@ inline void EllipseMakeCenter(HDC hdc, int x, int y, int width, int height)
 {
 	Ellipse(hdc, x - width / 2, y - width / 2, x + width / 2, y + height / 2);
 }
-
-//inline void MakeStar(HDC hdc, int x, int y , int length)
-//{
-//	MoveToEx(hdc, x, y, NULL);
-//	LineTo(hdc, x + length, y);
-//	LineTo(hdc, x, y + length);
-//	LineTo(hdc, x + length / 2, y - (length / 2));
-//	LineTo(hdc, x + length, y + length);
-//	LineTo(hdc, x, y);
-//}
