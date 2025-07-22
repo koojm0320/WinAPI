@@ -70,7 +70,7 @@ bool isSelected = false;
 // 2. 두 좌표의 차이 : 속도 -> 저장, 크기(speed)도 저장
 // 3. 가속도: 속도의 반대방향 (가속도 < 속도) 대략 0.1정도
 // 4. 속도 = 가속도 * deltatime + 현재속도
-// 5. 현재위치 =  속도 * deltatime + 위치 
+// 5. 현재위치 =  속도 * deltatime + 위치
 int pressX, pressY;
 int upX, upY;
 float deltatime = 1;

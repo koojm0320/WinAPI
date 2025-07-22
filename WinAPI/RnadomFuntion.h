@@ -8,10 +8,11 @@ public:
 	{
 		// API 공유 함수 GetTickCount: OS가 부팅된 후의 경과 시간을 체크 (밀리세컨)
 		// 규모가 크지 않은 난수에 쓰면 좋음
-		srand(GetTickCount());
+		srand(GetTickCount64());
 	}
 	~RandomFuntion() {}
 
+	HRESULT init() { return S_OK; }
 	inline int getInt(int num)
 	{
 		return rand() % num;

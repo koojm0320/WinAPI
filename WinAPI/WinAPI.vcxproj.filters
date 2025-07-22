@@ -25,6 +25,15 @@
     <Filter Include="API Framework\DesignPattern\Singleton">
       <UniqueIdentifier>{91fa67b7-84ed-41ce-b811-b97c2f1cb0af}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{942c5854-64e5-46d1-8ca8-c1eb412d9a4f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{6a1112f0-14de-4bc6-8709-c2c5c98d7aaf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ManagerClass">
+      <UniqueIdentifier>{3b2859ec-d275-4876-8580-6c68ad2861f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Stdafx.h">
@@ -44,6 +53,16 @@
     </ClInclude>
     <ClInclude Include="SingletonBase.h">
       <Filter>API Framework\DesignPattern\Singleton</Filter>
+    </ClInclude>
+    <ClInclude Include="GImage.h" />
+    <ClInclude Include="KeyManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="GameNode.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="MainGame.h">
+      <Filter>ManagerClass</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -88,6 +107,16 @@
     </ClCompile>
     <ClCompile Include="Homework0718_03.cpp">
       <Filter>HomeWork</Filter>
+    </ClCompile>
+    <ClCompile Include="GImage.cpp" />
+    <ClCompile Include="KeyManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="GameNode.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="MainGame.cpp">
+      <Filter>ManagerClass</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

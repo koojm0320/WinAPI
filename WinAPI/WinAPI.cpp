@@ -3,6 +3,7 @@
 
 // #include "framework.h"
 #include "Stdafx.h"
+#include "MainGame.h"
 
 #pragma region WinAPI
 /*
@@ -47,14 +48,21 @@ EX)
 // 인스턴스: 윈도우가 현재 실행되고 있는 프로그램을 확인하기 위한 값
 //          같은 프로그램이면 같은 인스턴스 값을 가진다 -> 클래스가 메모리에 실제로 구현된 실체 -> 실행되고 있는 각각의 프로그램들
 HINSTANCE _hInstance;
-
 // 윈도우 핸들: 창
 HWND _hWnd;
+POINT _ptMouse;
+
+void setWindowSize(int x, int y, int width, int height);
+
+MainGame* _mg;
+int centerX, centerY;
+RECT _rc1, _rc2;
 
 // LongPoint(LP)
 // 윈도우 타이틀
 LPTSTR _lpszClass = TEXT("Windows API");
 // TCHAR* pszString = _T("Windows API");
+LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 
 /*
 LPSTR   (Long Point String)         = char*
@@ -75,11 +83,6 @@ EX)
 유니코드 환경 -> 유니코드 환경
 */
 
-
-LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
-
-RECT rc;
-
 //#define GET_WINDOWS_HANDLE()        (GET_WINDOWS_MANAGER->getWindowsHandle())
 //
 //class WindowsManager
@@ -96,11 +99,14 @@ RECT rc;
 // lpszCmdParam: 명형형으로 입력된 프로그램 인수
 // nCmdShow: 실행될 형태
 // 경고 메세지: _In_, _In_opt_ 주석을 안적어서 나오는 오류임, 빌드는 잘 됨.
-int APIENTRY WinMain(   HINSTANCE hInstance,
+int APIENTRY wWinMain(   HINSTANCE hInstance,
                         HINSTANCE hPrevInstance,
                         LPSTR   lpszCmdParam,
                         int     nCmdShow)
 {
+
+
+    _mg = new MainGame();
 
     _hInstance = hInstance;
     /*
@@ -158,6 +164,8 @@ int APIENTRY WinMain(   HINSTANCE hInstance,
         hInstance,
         NULL
     );
+
+
 
     // 1-4 네 번째 처리 요소. 
     ShowWindow(_hWnd, nCmdShow);
@@ -230,9 +238,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
     switch (iMessage)
     {
     case WM_CREATE:
-        rc = RectMakeCenter(400, 400, 100, 100);
+        
+        _rc1 = RectMakeCenter(400, 400, 100, 100);
 
-        DrawRectMake(hdc, rc);
+        DrawRectMake(hdc, _rc1);
 
         break;
 
@@ -272,7 +281,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
         // 선을 이어주는 역할
         // Rectangle(hdc, 100, 100, 200, 200);
-        DrawRectMake(hdc, rc);
+        DrawRectMake(hdc, _rc1);
 
         EndPaint(hWnd, &ps);
         break;

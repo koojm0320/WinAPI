@@ -38,6 +38,9 @@ WBCS (아스키)
 #include <unordered_map>
 #include <random>
 #include <cassert>
+// 비트 사용할 때는 비트셋 함수 쓰는게 도움된다.
+#include <bitset>
+#include <string>
 
 /*
 // D2D / D3D 헤더
@@ -61,8 +64,10 @@ ID2D1HwndRenderTarget*	_ID2DRenderTarget = nullptr;
 // 내가 만든 헤더 파일
 #include "CommonMacroFuntion.h"
 #include "RnadomFuntion.h"
+#include "KeyManager.h"
 
 #define RND RandomFuntion::getSingleton()
+#define KEYMANAGER KeyManager::getSingleton()
 
 // # 매크로 (윈도우창 초기화) #
 
