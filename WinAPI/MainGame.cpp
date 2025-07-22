@@ -7,11 +7,11 @@ HRESULT MainGame::init(void)
 
 	// 배경 이미지 주소값
 	_bgImage = new GImage;
-	_bgImage->init("Resurces/Images/BackGround.bmp", WINSIZE_X, WINSIZE_Y);
+	_bgImage->init("Resources/Images/BackGround.bmp", WINSIZE_X, WINSIZE_Y);
 
 	// 플레이어 이미지 주소값
-	//_plImage = new GImage;
-	//_plImage->init(" ", ?, ?, true, RGB(255, 0, 255));
+	_plImage = new GImage;
+	_plImage->init("Resources/Images/Object/Player.bmp", 60, 60, true, RGB(255, 0, 255));
 
 
 	rc = RectMakeCenter(WINSIZE_X / 2, WINSIZE_Y / 2, 100, 100);

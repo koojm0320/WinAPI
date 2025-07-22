@@ -83,6 +83,6 @@ ID2D1HwndRenderTarget*	_ID2DRenderTarget = nullptr;
 #define SAFE_RELEASE(p)			{if(p) {(p)->release(); (p) = nullptr;}
 
 // static
-extern HINSTANCE	_hInstnace;
+extern HINSTANCE	_hInstance;
 extern HWND			_hWnd;
 extern POINT		_ptMouse;

@@ -53,7 +53,7 @@ HRESULT GImage::init(const char* fileName, int width, int height, bool isTrans, 
     _imageInfo->loadType = LOAD_FILE;
     _imageInfo->resID = 0;
     _imageInfo->hMemDC = CreateCompatibleDC(hdc);
-    _imageInfo->hBit = (HBITMAP)LoadImage(_hInstnace, fileName, IMAGE_BITMAP, width, height, LR_LOADFROMFILE);
+    _imageInfo->hBit = (HBITMAP)LoadImage(_hInstance, fileName, IMAGE_BITMAP, width, height, LR_LOADFROMFILE);
     _imageInfo->hOBIT = (HBITMAP)SelectObject(_imageInfo->hMemDC, _imageInfo->hBit);
     _imageInfo->width = width;
     _imageInfo->height = height;
