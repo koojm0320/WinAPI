@@ -75,7 +75,7 @@ ID2D1HwndRenderTarget*	_ID2DRenderTarget = nullptr;
 #define WINSTART_X		400
 #define WINSTART_Y		100
 #define WINSIZE_X		800
-#define WINSIZE_Y		800
+#define WINSIZE_Y		1280
 #define WINSTYLE		WS_CAPTION | WS_SYSMENU
 
 #define SAFE_DELETE(p)			{if(p) {delete (p); (p) = nullptr;}}
