@@ -5,6 +5,21 @@ HWND _hWnd;
 
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
 void setWindowSize(int x, int y, int width, int height);
+void updatePhysics(HWND hWnd);
+
+RECT _rc1;
+bool isSelected = false;
+
+int pressX, pressY;
+int upX, upY;
+float deltatime = 1.0f;
+float drag = 0.2f;
+float vlX, vlY;
+float accX, accY;
+int centerX, centerY;
+int currnetX, currnetY;
+
+POINT downPt;               // 마우스를 처음 눌렀을 때의 화면 좌표
 
 int APIENTRY WinMain(HINSTANCE hInstance,
     HINSTANCE hPrevInstance,
@@ -23,7 +38,7 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     wndClass.hIcon = LoadIcon(NULL, IDI_APPLICATION);                               // 아이콘 
     wndClass.hInstance = hInstance;                                                 // 식별자 정보
     wndClass.lpfnWndProc = WndProc;                                                 // 프로시저
-    wndClass.lpszClassName = WINNAME;                                            // 클래스 이름           
+    wndClass.lpszClassName = WINNAME;                                               // 클래스 이름           
     wndClass.lpszMenuName = NULL;                                                   // 메뉴 이름
     wndClass.style = CS_HREDRAW | CS_VREDRAW;                                       // 스타일 (다시 그리기 정보)
 
@@ -61,22 +76,12 @@ int APIENTRY WinMain(HINSTANCE hInstance,
     return message.wParam;
 }
 
-RECT _rc1;
-int centerX, centerY;
-int currnetX, currnetY;
-bool isSelected = false;
 
 // 1. 마우스 누르고 있을 때, 마우스를 뗄 때의 좌표를 저장 
 // 2. 두 좌표의 차이 : 속도 -> 저장, 크기(speed)도 저장
 // 3. 가속도: 속도의 반대방향 (가속도 < 속도) 대략 0.1정도
 // 4. 속도 = 가속도 * deltatime + 현재속도
-// 5. 현재위치 =  속도 * deltatime + 위치
-int pressX, pressY;
-int upX, upY;
-float deltatime = 1;
-float drag = 0.1;
-float vlX, vlY;
-float accX, accY;
+// 5. 현재위치 =  속도 * deltatime + 위치 
 
 DWORD lastUpdateTime = 0;
 
@@ -92,6 +97,51 @@ DWORD lastUpdateTime = 0;
 // currnetX = vlX * deltatime + currnetX;
 // currnetY = vlY * deltatime + currnetY;
 
+void updatePhysics(HWND hWnd)
+{
+    // 드래그 중일 때는 물리 연산 중지
+    if (isSelected) return;
+
+    // 1. 가속도 계산
+    accX = -vlX * drag;
+    accY = -vlY * drag;
+
+    // 2. 속도 업데이트
+    vlX += accX;
+    vlY += accY;
+
+    // 3. 위치 업데이트
+    currnetX += vlX;
+    currnetY += vlY;
+
+    // 벽 충돌 처리
+    RECT clientRect;
+    GetClientRect(hWnd, &clientRect);
+
+    if (currnetX < 0)
+    {
+        currnetX = 0;
+        vlX *= -1; // 속도 방향 반전
+    }
+    if (currnetX > clientRect.right - 100)
+    {
+        currnetX = (float)(clientRect.right - 100);
+        vlX *= -1;
+    }
+    if (currnetY < 0)
+    {
+        currnetY = 0;
+        vlY *= -1;
+    }
+    if (currnetY > clientRect.bottom - 100)
+    {
+        currnetY = (float)(clientRect.bottom - 100);
+        vlY *= -1;
+    }
+
+    // 최종 RECT 위치 업데이트
+    SetRect(&_rc1, (int)currnetX, (int)currnetY, (int)currnetX + 100, (int)currnetY + 100);
+}
 
 LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -105,14 +155,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
     switch (iMessage)
     {
     case WM_TIMER:
-        InvalidateRect(hWnd, NULL, TRUE);
+        updatePhysics(hWnd); // 매 타이머 틱마다 물리 연산
+        InvalidateRect(hWnd, NULL, TRUE); // 화면 다시 그리기 요청
         break;
 
     case WM_CREATE:
-        _rc1 = RectMake(100, 100, 100, 100);
+        currnetX = 100.0f;
+        currnetY = 100.0f;
+        SetRect(&_rc1, (int)currnetX, (int)currnetY, (int)currnetX + 100, (int)currnetY + 100);
 
-        centerX = WINSIZE_X / 2;
-        centerY = WINSIZE_Y / 2;
+        // 물리 루프를 위한 타이머 설정 (약 60 FPS)
+        SetTimer(hWnd, 1, 16, NULL);
 
         break;
 
@@ -123,8 +176,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
         DrawRectMake(hdc, _rc1);
 
         // GetTickCount()
-        wsprintf(strPT, "X: %d     Y: %d", pt.x, pt.y);
-        TextOut(hdc, 10, 10, strPT, strlen(strPT));
 
 
         EndPaint(hWnd, &ps);
@@ -138,37 +189,46 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
         // 사각형 좌표 갱신
         if (isSelected == true)
         {
-            _rc1 = RectMake(pt.x - currnetX, pt.y - currnetY, 100, 100);
+            currnetX = (float)(pt.x - pressX);
+            currnetY = (float)(pt.y - pressY);
+            SetRect(&_rc1, (int)currnetX, (int)currnetY, (int)currnetX + 100, (int)currnetY + 100);
         }
         InvalidateRect(hWnd, NULL, TRUE);
         break;
 
     case WM_LBUTTONDOWN:
-        if (pt.x < _rc1.right && 
-            pt.x > _rc1.left &&
-            pt.y < _rc1.bottom &&
-            pt.y > _rc1.top)
+        pt.x = LOWORD(lParam);
+        pt.y = HIWORD(lParam);
+
+        // 사각형 내부를 클릭했는지 확인
+        if (PtInRect(&_rc1, pt))
         {
+            isSelected = true;
+            // 속도 초기화
+            vlX = 0;
+            vlY = 0;
+            // 사각형 좌상단부터 마우스 클릭 지점까지의 간격(offset) 저장
             pressX = pt.x - _rc1.left;
             pressY = pt.y - _rc1.top;
-            isSelected = true;
+            // 던지기 효과를 위해 마우스를 누른 시점의 좌표 저장
+            downPt = pt;
         }
 
         break;
 
     case WM_LBUTTONUP:
-        upX = LOWORD(lParam);
-        upY = HIWORD(lParam);
+        if (isSelected)
+        {
+            isSelected = false;
+            // 마우스를 뗄 때의 좌표
+            int upX = LOWORD(lParam);
+            int upY = HIWORD(lParam);
 
-        vlX = upX - pressX;
-        vlY = upY - pressY;
-
-        accX = vlX * (-1.0) * (drag);
-        accY = vlY * (-1.0) * (drag);
-
-        isSelected = false;
-
-        InvalidateRect(hWnd, NULL, TRUE);
+            // 처음 누른 좌표와 뗀 좌표의 차이로 "던지는" 속도를 계산
+            // 값을 0.2 곱해서 속도를 적절히 조절
+            vlX = (float)(upX - downPt.x) * 0.2f;
+            vlY = (float)(upY - downPt.y) * 0.2f;
+        }
 
         break;
 
@@ -184,10 +244,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
 
             break;
         }
-        InvalidateRect(hWnd, NULL, TRUE);
         break;
 
     case WM_DESTROY:
+        KillTimer(hWnd, 1);
         PostQuitMessage(0);
         return 0;
     }

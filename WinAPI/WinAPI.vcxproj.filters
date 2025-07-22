@@ -75,9 +75,6 @@
     <ClCompile Include="Homework0716_03.cpp">
       <Filter>HomeWork</Filter>
     </ClCompile>
-    <ClCompile Include="Stdafx.cpp">
-      <Filter>API Framework\PCH</Filter>
-    </ClCompile>
     <ClCompile Include="WinAPI.cpp">
       <Filter>WinMain</Filter>
     </ClCompile>

@@ -5,8 +5,8 @@
 class MainGame : public GameNode
 {
 private:
-	GImage* _bgImage;
-	GImage* _plImage;
+	//GImage* _bgImage;
+	//GImage* _plImage;
 
 	RECT rc;
 
