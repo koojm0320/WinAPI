@@ -8,7 +8,10 @@
 
 // PCH -> Stdafx
 
-#define WIN32_LEAN_AND_MEAN   
+#define WIN32_LEAN_AND_MEAN
+
+// 이미지 라이브러리
+#pragma comment(lib, "msimg32.lib")
 
 // Windows 헤더 (코어)
 #include <Windows.h>
