@@ -4,7 +4,7 @@
 
 struct Ball
 {
-	int _circleX, _circleY;
+	float _circleX, _circleY;
 };
 
 class MainGame : public GameNode
@@ -21,7 +21,11 @@ private:
 	int _isLeft;
  
 	int _circleRad;
-	int _circleDX, _circleDY;
+	float _circleDX, _circleDY;
+	float _angle;
+	float _speed;
+	float _space;
+
 	std::vector<Ball> _ball;
 
 	RECT rc;

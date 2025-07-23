@@ -34,17 +34,22 @@ HRESULT MainGame::init(void)
 	_index = 0;
 	_isLeft = false;
 
+	// 지렁이
 	_circleRad = 10;
-	_circleDX = 10;
-	_circleDY = 10;
-	int length = 100;
-	int startX = rand() % WINSIZE_X;
-	int startY = rand() % WINSIZE_Y;
+	_angle = 0.0f;
+	_speed = 5.0f;
+	_space = 15.0f;
+	_circleDX = cos(_angle) * _speed;
+	_circleDY = sin(_angle) * _speed;
+
+	int length = 50;
+	float startX = rand() % WINSIZE_X;
+	float startY = rand() % WINSIZE_Y;
 
 	_ball.clear();
 	for (int i = 0; i < length; ++i)
 	{
-		_ball.push_back({ startX,startY });
+		_ball.push_back({ startX - i * _space, startY });
 	}
 
 	return S_OK;
@@ -73,25 +78,31 @@ void MainGame::update(void)
 
 	if (KEYMANAGER->isStayKeyDown(VK_UP))
 	{
-		rc.top -= 3;
-		rc.bottom -= 3;
+		//rc.top -= 3;
+		//rc.bottom -= 3;
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
 	{
-		rc.top += 3;
-		rc.bottom += 3;
+		//rc.top += 3;
+		//rc.bottom += 3;
 		// _isLeft = true;
 	}	// _nine->setX(_nine->getX())
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 	{
-		rc.left -= 3;
-		rc.right -= 3;
+		//rc.left -= 3;
+		//rc.right -= 3;
+		_angle -= 0.07f;
 	}
 	if (KEYMANAGER->isStayKeyDown(VK_RIGHT))
 	{
-		rc.left += 3;
-		rc.right += 3;
+		//rc.left += 3;
+		//rc.right += 3;
+
+		_angle += 0.07f;
 	}
+
+	_circleDX = cos(_angle) * _speed;
+	_circleDY = sin(_angle) * _speed;
 
 	// 원이 벽에 튕기는 로직
 	_ball[0]._circleX += _circleDX;
@@ -100,28 +111,40 @@ void MainGame::update(void)
 	if (_ball[0]._circleX - _circleRad < 0)
 	{
 		_ball[0]._circleX = _circleRad;
-		_circleDX *= -1;
+		_angle = 3.141592f - _angle;
 	}
 	else if (_ball[0]._circleX + _circleRad > WINSIZE_X)
 	{
 		_ball[0]._circleX = WINSIZE_X - _circleRad;
-		_circleDX *= -1;
+		_angle = 3.141592f - _angle;
 	}
 
 	if (_ball[0]._circleY - _circleRad < 0)
 	{
 		_ball[0]._circleY = _circleRad;
-		_circleDY *= -1;
+		_angle *= -1;
 	}
 	else if (_ball[0]._circleY + _circleRad > WINSIZE_Y)
 	{
 		_ball[0]._circleY = WINSIZE_Y - _circleRad;
-		_circleDY *= -1;
+		_angle *= -1;
 	}
 
-	for (int i = _ball.size() - 1; i > 0; --i)
+	// 앞 마디 공의 거리를 계산해서 경로 이동(위치 조정)
+	for (size_t i = 1; i < _ball.size(); ++i)
 	{
-		_ball[i] = _ball[i - 1];
+		float dx = _ball[i - 1]._circleX - _ball[i]._circleX;
+		float dy = _ball[i - 1]._circleY - _ball[i]._circleY;
+
+		// sqrt: 제곱근
+		float distance = sqrt(dx * dx + dy * dy);
+		
+		if (distance > _space)
+		{
+			float followAngle = atan2(dy, dx);
+			_ball[i]._circleX = _ball[i - 1]._circleX - cos(followAngle) * _space;
+			_ball[i]._circleY = _ball[i - 1]._circleY - sin(followAngle) * _space;
+		}
 	}
 
 
