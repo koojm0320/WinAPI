@@ -5,7 +5,8 @@
 GImage::GImage() :  _imageInfo(nullptr),
                     _fileName(nullptr),
                     _isTrans(false),
-                    _transColor(RGB(0, 0, 0))
+                    _transColor(RGB(0, 0, 0)
+                    )
 {
     // !!
 }
@@ -80,6 +81,28 @@ HRESULT GImage::init(const char* fileName, int width, int height, bool isTrans, 
     return S_OK;
 }
 
+HRESULT GImage::initForAlphaBlend(void)
+{
+    HDC hdc = GetDC(_hWnd);
+
+    _blendFunc.BlendFlags = 0;
+    _blendFunc.AlphaFormat = 0;
+    _blendFunc.AlphaFormat = AC_SRC_OVER;
+
+    _blendImage = new IMAGE_INFO;
+    _blendImage->loadType = LOAD_FILE;
+    _blendImage->resID = 0;
+    _blendImage->hMemDC = CreateCompatibleDC(hdc);
+    _blendImage->hBit = (HBITMAP)CreateCompatibleBitmap(hdc, _imageInfo->width, _imageInfo->height);
+    _blendImage->hOBIT = (HBITMAP)SelectObject(_blendImage->hMemDC, _blendImage->hBit);
+    _blendImage->width = WINSIZE_X;
+    _blendImage->height = WINSIZE_Y;
+
+    ReleaseDC(_hWnd, hdc);
+
+    return S_OK;
+}
+
 void GImage::setTransColor(bool isTrans, COLORREF transColor)
 {
     _isTrans = isTrans;
@@ -103,6 +126,16 @@ void GImage::release(void)
         // 초기화
         _isTrans = false;
         _transColor = RGB(0, 0, 0);
+    }
+
+    // 알파블렌드 이미지 동적 할당 해제
+    if (_blendImage)
+    {
+        SelectObject(_blendImage->hMemDC, _blendImage->hOBIT);
+        DeleteObject(_blendImage->hBit);
+        DeleteDC(_blendImage->hMemDC);
+
+        SAFE_DELETE(_blendImage);
     }
 }
 
@@ -155,5 +188,162 @@ void GImage::render(HDC hdc, int destX, int destY)
     else
     {
         BitBlt(hdc, destX, destY, _imageInfo->width, _imageInfo->height, _imageInfo->hMemDC, 0, 0, SRCCOPY);
+    }
+}
+
+void GImage::render(HDC hdc, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight)
+{
+    if (_isTrans)
+    {
+        GdiTransparentBlt
+        (
+            hdc,
+            destX, destY,
+            sourWidth,
+            sourHeight,
+            _imageInfo->hMemDC,
+            sourX, sourY,
+            sourWidth,
+            sourHeight,
+            _transColor
+        );
+    }
+    else
+    {
+        BitBlt(hdc, destX, destY, sourWidth, sourHeight, _imageInfo->hMemDC, sourX, sourY, SRCCOPY);
+    }
+}
+
+void GImage::alphaRender(HDC hdc, BYTE alpha)
+{
+    if (!_blendImage) initForAlphaBlend();
+
+    // 0 ~ 255
+    _blendFunc.SourceConstantAlpha = alpha;
+
+    if (_isTrans)
+    {
+        // 1. 출력 DC에서 그려져 있는 내용을 블렌드 이미지에 그린다.
+        BitBlt
+        (
+            _blendImage->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            hdc,
+            0, 0,
+            SRCCOPY     // 고속 복사
+        );
+
+
+        // 2. 원본 이미지의 배경을 빼고 블렌드 이미지에 그린다.
+        GdiTransparentBlt
+        (
+            _blendImage->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _imageInfo->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _transColor
+        );
+
+        // 3. 블렌드 이미지를 우리가 보고 있는 화면 영역에 그린다.
+        AlphaBlend
+        (
+            hdc,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _blendImage->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _blendFunc
+        );
+    }
+    else
+    {
+        AlphaBlend
+        (
+            hdc,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _imageInfo->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _blendFunc
+        );
+    }
+}
+
+void GImage::alphaRender(HDC hdc, int destX, int destY, BYTE alpha)
+{
+    if (!_blendImage) initForAlphaBlend();
+
+    // 0 ~ 255
+    _blendFunc.SourceConstantAlpha = alpha;
+
+    if (_isTrans)
+    {
+        // 1. 출력 DC에서 그려져 있는 내용을 블렌드 이미지에 그린다.
+        BitBlt
+        (
+            _blendImage->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            hdc,
+            destX, destY,
+            SRCCOPY     // 고속 복사
+        );
+
+
+        // 2. 원본 이미지의 배경을 빼고 블렌드 이미지에 그린다.
+        GdiTransparentBlt
+        (
+            _blendImage->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _imageInfo->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _transColor
+        );
+
+        // 3. 블렌드 이미지를 우리가 보고 있는 화면 영역에 그린다.
+        AlphaBlend
+        (
+            hdc,
+            destX, destY,
+            _imageInfo->width,
+            _imageInfo->height,
+            _blendImage->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _blendFunc
+        );
+    }
+    else
+    {
+        AlphaBlend
+        (
+            hdc,
+            destX, destY,
+            _imageInfo->width,
+            _imageInfo->height,
+            _imageInfo->hMemDC,
+            0, 0,
+            _imageInfo->width,
+            _imageInfo->height,
+            _blendFunc
+        );
     }
 }

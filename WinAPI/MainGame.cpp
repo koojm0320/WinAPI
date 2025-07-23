@@ -6,8 +6,8 @@ HRESULT MainGame::init(void)
 	GameNode::init();
 
 	// 배경 이미지 주소값
-	//_bgImage = new GImage;
-	//_bgImage->init("Resources/Images/BackGround.bmp", WINSIZE_X, WINSIZE_Y);
+	_bgImage = new GImage;
+	_bgImage->init("Resources/Images/mario.bmp", WINSIZE_X, WINSIZE_Y);
 
 	// 플레이어 이미지 주소값
 	//_plImage = new GImage;
@@ -16,6 +16,11 @@ HRESULT MainGame::init(void)
 
 	rc = RectMakeCenter(WINSIZE_X / 2, WINSIZE_Y / 2, 100, 100);
 
+	_countA = _countB = 0;
+	_alphaA = _alphaB = 0;
+
+	_isAlphaIncrease = false;
+
 	return S_OK;
 }
 
@@ -23,7 +28,7 @@ void MainGame::release(void)
 {
 	GameNode::release();
 
-	//SAFE_DELETE(_bgImage);
+	SAFE_DELETE(_bgImage);
 	//SAFE_DELETE(_plImage);
 }
 
@@ -67,7 +72,7 @@ void MainGame::render(HDC hdc)
 	PatBlt(memDC, 0, 0, WINSIZE_X, WINSIZE_Y, BLACKNESS);
 	// ============
 
-	//_bgImage->render(memDC, 0, 0);
+	_bgImage->render(memDC, 0, 0);
 
 	DrawRectMake(memDC, rc);
 

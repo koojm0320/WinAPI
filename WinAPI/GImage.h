@@ -44,12 +44,18 @@ private:
 	// 255, 0, 255 -> 마젠타 색상 많이 사용
 	COLORREF		_transColor;
 
+	BLENDFUNCTION	_blendFunc;
+	LPIMAGE_INFO	_blendImage;
+
 public:
 	// 빈 비트맵
 	HRESULT init(int width, int height);
 
-	// 이미지
+	// 이미지 삽입, 배경 삭제처리
 	HRESULT init(const char* fileName, int width, int height, bool isTrans = false, COLORREF transColor = RGB(0, 0, 0));
+
+	// 알파블렌드
+	HRESULT initForAlphaBlend(void);
 
 	// 투명 컬러키 세팅
 	void setTransColor(bool isTrans, COLORREF transColor);
@@ -59,6 +65,10 @@ public:
 
 	void render(HDC hdc);
 	void render(HDC hdc, int destX, int destY);
+	void render(HDC hdc, int destX, int destY, int sourX, int sourY, int sourWidth, int sourHeight);
+
+	void alphaRender(HDC hdc, BYTE alpha);
+	void alphaRender(HDC hdc, int destX, int destY, BYTE alpha);
 
 	inline HDC getMemDC(void) { return _imageInfo->hMemDC; }
 

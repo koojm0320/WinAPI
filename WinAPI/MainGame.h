@@ -5,10 +5,15 @@
 class MainGame : public GameNode
 {
 private:
-	//GImage* _bgImage;
+	GImage* _bgImage;
 	//GImage* _plImage;
 
 	RECT rc;
+
+	int _countA, _countB;
+	int _alphaA, _alphaB;
+
+	bool _isAlphaIncrease;
 
 public:
 	HRESULT init(void) override;
