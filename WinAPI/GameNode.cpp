@@ -1,20 +1,24 @@
 #include "Stdafx.h"
 #include "GameNode.h"
 
-void GameNode::setBackBuffer(void)
-{
-	_backBuffer = new GImage;
-	_backBuffer->init(WINSIZE_X, WINSIZE_Y);
-}
-
 HRESULT GameNode::init(void)
 {
-	SetTimer(_hWnd, 1, 10, NULL);
-	KEYMANAGER->init();
-	RND->init();
-	this->setBackBuffer();
-	// 석세스 오케이
 	return S_OK;
+}
+
+HRESULT GameNode::init(bool managerInit)
+{
+	_hdc = GetDC(_hWnd);
+	_managerInit = managerInit;
+	if (managerInit)
+	{
+		SetTimer(_hWnd, 1, 10, NULL);
+		RND->init();
+		KEYMANAGER->init();
+		IMAGEMANAGER->init();
+		// 석세스 오케이
+		return S_OK;
+	}
 }
 
 void GameNode::release(void)
@@ -31,11 +35,20 @@ void GameNode::update(void)
 	InvalidateRect(_hWnd, NULL, false);
 }
 
-void GameNode::render(HDC hdc)
+void GameNode::render(void)
 {
-	TCHAR strPT[1024];
-	wsprintf(strPT, "%d", GetTickCount64() / 1000);
-	TextOut(hdc, 10, 10, strPT, strlen(strPT));
+	if (_managerInit)
+	{
+		KillTimer(_hWnd, 1);
+
+		RND->releaseSingleton();
+		KEYMANAGER->releaseSingleton();
+
+		IMAGEMANAGER->release();
+		IMAGEMANAGER->releaseSingleton();
+	}
+
+	ReleaseDC(_hWnd, _hdc);
 }
 
 LRESULT GameNode::mainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -51,7 +64,6 @@ LRESULT GameNode::mainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 	case WM_PAINT:
 		hdc = BeginPaint(hWnd, &ps);
 
-		this->render(hdc);
 
 		EndPaint(hWnd, &ps);
 		break;

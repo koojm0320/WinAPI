@@ -68,9 +68,11 @@ ID2D1HwndRenderTarget*	_ID2DRenderTarget = nullptr;
 #include "CommonMacroFuntion.h"
 #include "RnadomFuntion.h"
 #include "KeyManager.h"
+#include "ImageManager.h"
 
 #define RND RandomFuntion::getSingleton()
 #define KEYMANAGER KeyManager::getSingleton()
+#define IMAGEMANAGER ImageManager::getSingleton()
 
 // # 매크로 (윈도우창 초기화) #
 

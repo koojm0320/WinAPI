@@ -39,6 +39,6 @@ public:
 	HRESULT init(void) override;
 	void release(void) override;
 	void update(void) override;
-	void render(HDC hdc) override;
+	void render(void) override;
 };
 

@@ -3,11 +3,11 @@
 
 HRESULT MainGame::init(void)
 {
-	GameNode::init();
+	GameNode::init(true);
 
 	// 배경 이미지 주소값
-	_bgImage = new GImage;
-	_bgImage->init("Resources/Images/mario.bmp", WINSIZE_X, WINSIZE_Y);
+	//_bgImage = new GImage;
+	//_bgImage->init("Resources/Images/mario.bmp", WINSIZE_X, WINSIZE_Y);
 
 	// 플레이어 이미지 주소값
 	//_plImage = new GImage;
@@ -20,7 +20,7 @@ HRESULT MainGame::init(void)
 	// 							10, 2
 	// 						true, RGB(255, 0, 255));
 
-
+	IMAGEMANAGER->addImage("마리오", "Resources/Images/mario.bmp", WINSIZE_X, WINSIZE_Y);
 	
 
 	rc = RectMakeCenter(WINSIZE_X / 2, WINSIZE_Y / 2, 100, 100);
@@ -59,7 +59,7 @@ void MainGame::release(void)
 {
 	GameNode::release();
 
-	SAFE_DELETE(_bgImage);
+	//SAFE_DELETE(_bgImage);
 	//SAFE_DELETE(_plImage);
 	//SAFE_DELETE(_리소스);
 }
@@ -200,26 +200,22 @@ void MainGame::update(void)
 	//}
 }
 
-void MainGame::render(HDC hdc)
-{
-	HDC memDC = this->getBackBuffer()->getMemDC();
-	PatBlt(memDC, 0, 0, WINSIZE_X, WINSIZE_Y, WHITENESS);
+void MainGame::render(void)
+{;
+	PatBlt(getMemDC(), 0, 0, WINSIZE_X, WINSIZE_Y, WHITENESS);
 	// ============
 
 	// _bgImage->render(memDC, 0, 0);
 	//_bgImage->alphaRender(memDC, _alphaA);
 
 	//DrawRectMake(memDC, rc);
-	for (size_t i = 0; i < _ball.size(); i++)
-	{
-		EllipseMakeCenter(memDC, _ball[i]._circleX, _ball[i]._circleY, _circleRad * 2, _circleRad * 2);
+	//for (size_t i = 0; i < _ball.size(); i++)
+	//{
+	//	EllipseMakeCenter(memDC, _ball[i]._circleX, _ball[i]._circleY, _circleRad * 2, _circleRad * 2);
+	//
+	//}
 
-	}
-
-	if (KEYMANAGER->isToggleKey(VK_F1))
-	{
-		DrawRectMake(hdc, rc);
-	}
+	IMAGEMANAGER->alphaRender("마리오", getMemDC(), _alphaA);
 
 	//_plImage->render(memDC, rc.left, rc.top);
 	//_plImage->alphaRender(memDC, rc.left, rc.top, _alphaA);
@@ -230,5 +226,5 @@ void MainGame::render(HDC hdc)
 
 
 	// ============
-	this->getBackBuffer()->render(hdc, 0, 0);
+	this->getBackBuffer()->render(getHDC());
 }
