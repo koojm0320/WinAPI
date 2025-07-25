@@ -16,6 +16,7 @@ HRESULT GameNode::init(bool managerInit)
 		RND->init();
 		KEYMANAGER->init();
 		IMAGEMANAGER->init();
+		SCENEMANAGER->init();
 		// 석세스 오케이
 		return S_OK;
 	}
@@ -24,8 +25,13 @@ HRESULT GameNode::init(bool managerInit)
 void GameNode::release(void)
 {
 	KillTimer(_hWnd, 1);
+
 	RND->releaseSingleton();
+	
 	KEYMANAGER->releaseSingleton();
+	
+	SCENEMANAGER->release();
+	SCENEMANAGER->releaseSingleton();
 	SAFE_DELETE(_backBuffer);
 }
 

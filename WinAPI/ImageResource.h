@@ -1,9 +1,13 @@
 #pragma once
-class ImageResource
+#include "GameNode.h"
+
+class ImageResource : public GameNode
 {
 private:
 
 
 public:
+	ImageResource();
+	~ImageResource();
 };
 

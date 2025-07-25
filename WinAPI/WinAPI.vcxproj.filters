@@ -66,6 +66,8 @@
     </ClInclude>
     <ClInclude Include="ImageManager.h" />
     <ClInclude Include="ImageResource.h" />
+    <ClInclude Include="SceneManager.h" />
+    <ClInclude Include="CScene.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Homework0716_01.cpp">
@@ -116,6 +118,8 @@
     </ClCompile>
     <ClCompile Include="ImageManager.cpp" />
     <ClCompile Include="ImageResource.cpp" />
+    <ClCompile Include="SceneManager.cpp" />
+    <ClCompile Include="CScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="메모.txt" />

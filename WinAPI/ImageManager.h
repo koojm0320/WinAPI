@@ -38,6 +38,9 @@ public:
 	void frameRender(std::string strKey, HDC hdc, int destX, int destY);
 	void frameRender(std::string strKey, HDC hdc, int destX, int destY, int currentFrameX, int currentFrameY);
 
+	void loopRender(std::string strKey, HDC hdc, const LPRECT drawArea, int offSetX, int offSetY);
+
+
 	ImageManager();
 	~ImageManager();
 

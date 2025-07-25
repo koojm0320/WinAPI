@@ -35,6 +35,7 @@ private:
 
 	bool _isAlphaIncrease;
 
+
 public:
 	HRESULT init(void) override;
 	void release(void) override;

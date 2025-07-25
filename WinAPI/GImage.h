@@ -42,6 +42,8 @@ public:
 			hOBIT = NULL;
 			width = 0;
 			height = 0;
+			x = 0;
+			y = 0;
 			// + ÃÊ±âÈ­
 			currentFrameX = 0;
 			currentFrameY = 0;
@@ -93,6 +95,9 @@ public:
 
 	void frameRender(HDC hdc, int destX, int destY);
 	void frameRender(HDC hdc, int destX, int destY, int currentFrameX, int currentFrameY);
+
+	void loopRender(HDC hdc, const LPRECT drawArea, int offSetX, int offSetY);
+	// void loopLander(HDC hdc, const LPRECT drawArea, int offSetX, int offSetY, BYTE alpha);
 
 	inline HDC getMemDC(void) { return _imageInfo->hMemDC; }
 

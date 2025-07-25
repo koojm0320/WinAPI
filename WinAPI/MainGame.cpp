@@ -1,5 +1,5 @@
-#include "MainGame.h"
 #include "Stdafx.h"
+#include "MainGame.h"
 
 HRESULT MainGame::init(void)
 {
@@ -22,6 +22,8 @@ HRESULT MainGame::init(void)
 
 	IMAGEMANAGER->addImage("마리오", "Resources/Images/mario.bmp", WINSIZE_X, WINSIZE_Y);
 	
+	SCENEMANAGER->addScene("테스트 씬", new ImageResource);
+	SCENEMANAGER->changeScene("테스트 씬");
 
 	rc = RectMakeCenter(WINSIZE_X / 2, WINSIZE_Y / 2, 100, 100);
 
@@ -68,6 +70,8 @@ void MainGame::update(void)
 {
 	GameNode::update();
 
+	SCENEMANAGER->update();
+
 	if (KEYMANAGER->isOnceKeyDown('Q'))
 	{
 		if (MessageBox(_hWnd, "게임 종료?", "종료확인", MB_OKCANCEL))
@@ -76,17 +80,6 @@ void MainGame::update(void)
 		}
 	}
 
-	if (KEYMANAGER->isStayKeyDown(VK_UP))
-	{
-		//rc.top -= 3;
-		//rc.bottom -= 3;
-	}
-	if (KEYMANAGER->isStayKeyDown(VK_DOWN))
-	{
-		//rc.top += 3;
-		//rc.bottom += 3;
-		// _isLeft = true;
-	}	// _nine->setX(_nine->getX())
 	if (KEYMANAGER->isStayKeyDown(VK_LEFT))
 	{
 		//rc.left -= 3;
@@ -201,7 +194,7 @@ void MainGame::update(void)
 }
 
 void MainGame::render(void)
-{;
+{
 	PatBlt(getMemDC(), 0, 0, WINSIZE_X, WINSIZE_Y, WHITENESS);
 	// ============
 
@@ -216,6 +209,8 @@ void MainGame::render(void)
 	//}
 
 	IMAGEMANAGER->alphaRender("마리오", getMemDC(), _alphaA);
+	SCENEMANAGER->render();
+	//IMAGEMANAGER->loopRender("배경 루프", getMemDC(), &RectMake(0, 0, WINSIZE_X, WINSIZE_Y), _bgSpeed, 0);
 
 	//_plImage->render(memDC, rc.left, rc.top);
 	//_plImage->alphaRender(memDC, rc.left, rc.top, _alphaA);
